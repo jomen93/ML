@@ -1,0 +1,27 @@
+Reesults EMV
+ 
+parameters
+ mu_EM = 1.767
+ mu_EF = 1.618
+ mu_PM = 78.200
+ mu_PF = 58.650
+('Rene', 'Masculino')
+('Guadalupe', 'Femenino')
+('Denis', 'Femenino')
+('Alex', 'Femenino')
+('Cris', 'Masculino')
+ 
+ 
+Reesults MAP
+ 
+parameters
+ mu_EM = 1.732
+ mu_EF = 1.431
+ mu_PM = 75.676
+ mu_PF = 57.698
+predictions
+('Rene', 'Masculino')
+('Guadalupe', 'Femenino')
+('Denis', 'Femenino')
+('Alex', 'Femenino')
+('Cris', 'Femenino')
