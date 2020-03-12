@@ -1,1 +1,1 @@
-pip install -q eeconvert
+pythor3 tarea1.py > results.dat

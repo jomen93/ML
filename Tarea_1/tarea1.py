@@ -127,7 +127,7 @@ def MAP(x):
    return x,clases[max(CM,CF)],CM,CF
 
 print(" ")
-print("Reesults MAP")
+print("Results MAP")
 print(" ")
 print("parameters")
 print(" mu_EM = {0:.3f}".format(mu_EM2))
