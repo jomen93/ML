@@ -1,10 +1,10 @@
-    # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from utils_1 import N
+from utils import N
 
 """
 Author : Johan Méndez

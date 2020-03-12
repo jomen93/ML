@@ -1,3 +1,4 @@
+ 
 Reesults EMV
  
 parameters
@@ -5,23 +6,27 @@ parameters
  mu_EF = 1.618
  mu_PM = 78.200
  mu_PF = 58.650
-('Rene', 'Masculino')
-('Guadalupe', 'Femenino')
-('Denis', 'Femenino')
-('Alex', 'Femenino')
-('Cris', 'Masculino')
+ 
+predictions
+(['Rene', 1.68, 65.0], 'Femenino', 0, 0.024617189167210275)
+(['Guadalupe', 1.75, 80.0], 'Femenino', 0.03453817661333737, 2.2776213815668176)
+(['Denis', 1.8, 79.0], 'Femenino', 0.03863089376964986, 2.4307667134297692)
+(['Alex', 1.9, 85.0], 'Femenino', 19.818789779153725, 392.27808779856326)
+(['Cris', 1.65, 70], 'Masculino', 7.295540261399398, 0.03803909213190314)
  
  
-Reesults MAP
+Results MAP
  
 parameters
- mu_EM = 1.732
- mu_EF = 1.431
- mu_PM = 75.676
- mu_PF = 57.698
+ mu_EM = 1.767
+ mu_EF = 1.617
+ mu_PM = 69.053
+ mu_PF = 51.483
+ 
 predictions
-('Rene', 'Masculino')
-('Guadalupe', 'Femenino')
-('Denis', 'Femenino')
-('Alex', 'Femenino')
-('Cris', 'Femenino')
+(['Rene', 1.68, 65.0], 'Femenino', 0, 0.06791228839361729)
+(['Guadalupe', 1.75, 80.0], 'Femenino', 1.3931693913720178, 28.948703431800627)
+(['Denis', 1.8, 79.0], 'Femenino', 0.8736988274721701, 28.202435888090267)
+(['Alex', 1.9, 85.0], 'Masculino', 14612.28589493396, 8503.619880250359)
+(['Cris', 1.65, 70], 'Masculino', 0.8864686998045899, 0.17281196558926418)
+ 
