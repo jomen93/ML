@@ -1,4 +1,3 @@
 # ML
  
-Repository to save the progress in the homeworsks of Machine Learning signature.
-IIMAS, UNAM 
+Repository to save progress in the tasks of the Machine Learning course. IIMAS, UNAM
