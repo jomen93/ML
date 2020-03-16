@@ -1,2 +1,2 @@
-python3 tarea1.py > results.dat
+python3 Exercise_1.py > results.dat
 cat results.dat
