@@ -8,6 +8,19 @@ Si bien hubo algún elemento de suerte involucrado en sobrevivir, parece que alg
 
 ### ¿Qué tipo de personas tenían más probabilidad de sobrevivir?
 
-Utilizando las variables del pasajero 
+<div aling="center">
+las bases de datos se tienen en dos grupos, uno de entrenamiento **train.csv**y otro de validación **test.csv**. Este conjunto de datos se utiliza para construir diferentes modelos de aprendizaje automático.
+</div>
+
+## Diccionario de datos 
+
+| Variable | Definición |Llave
+| ------------- | ------------- |-------------- |
+| survival  | Sobreviviente  | 0 = No, 1 = si
+| pclass  | Clase de tiquete | 1 = 1ra, 2 = 2da, 3 = 3ra |
+
+## Notas de las variables
+
+**pclass:** una referencia  del nivel socioeconomico 
 
 
