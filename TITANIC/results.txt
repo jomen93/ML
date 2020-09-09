@@ -1,0 +1,26 @@
+Name         BernoulliNB
+Accuracy        0.804469
+Precision       0.722892
+Recall          0.833333
+F1-Score        0.774194
+Name: 0, dtype: object
+
+Name         LogisticRegression
+Accuracy               0.815642
+Precision              0.774648
+Recall                 0.763889
+F1-Score               0.769231
+Name: 1, dtype: object
+
+Name         RandomForestClassifier
+Accuracy                   0.821229
+Precision                    0.8125
+Recall                     0.722222
+F1-Score                   0.764706
+Name: 2, dtype: object
+
+Name:  StackingClassifier
+Accuracy:  0.8044692737430168
+Recall:  0.6944444444444444
+F1-Score:  0.7407407407407406
+Precision:  0.7936507936507936
