@@ -1,4 +1,4 @@
-# ============================================================================
+#============================================================================
 # Librerias
 import numpy as np
 import matplotlib.pyplot as plt
@@ -138,7 +138,3 @@ plot_confusion_matrix(clf, X_test,
                       display_labels=y_test)
 plt.savefig("Metamodelo")
 plt.show()
-
-
-
-print("Hola Jose David")
