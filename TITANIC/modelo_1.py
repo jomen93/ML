@@ -13,8 +13,10 @@ from sklearn.ensemble import (RandomForestClassifier,
                               StackingClassifier)
 from sklearn.metrics import (accuracy_score, auc, roc_auc_score,
                              recall_score, log_loss, roc_curve,
-                             f1_score, precision_score)
+                             f1_score, precision_score,
+                             plot_confusion_matrix)
 from sklearn.linear_model import LogisticRegression
+
 # ============================================================================
 # Lectura de datos
 data = pd.read_csv("DATA/train.csv")
@@ -87,6 +89,25 @@ def scores(clfs):
         metricas = metricas.append(stats, ignore_index=True)
     return metricas
 
+
+# Función para el plot de las matrices de confusión
+def confusion_matrix(clfs):
+    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(10, 5))
+
+    for cls, ax in zip(clfs, axes.flatten()):
+        plot_confusion_matrix(cls,
+                              X_test,
+                              y_test,
+                              ax=ax,
+                              cmap='Reds',
+                              display_labels=y_test)
+    ax.title.set_text(type(cls).__name__)
+    plt.tight_layout()
+    plt.savefig("Matriz_de _confusion")
+    plt.show()
+
+confusion_matrix(clfs)
+
 # Medicion de las metrica para los tres modelos
 print(scores(clfs).iloc[0])
 print("")
@@ -102,6 +123,8 @@ clfs = [("Bernoulli", BernoulliNB(alpha=0.8)),
 clf = StackingClassifier(estimators=clfs,
       final_estimator=RandomForestClassifier(random_state=11))
 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
 clf.fit(X_train, y_train)
 pred = clf.predict(X_test)
 print("Name: ", type(clf).__name__)
@@ -109,3 +132,9 @@ print("Accuracy: ", accuracy_score(y_test, pred))
 print('Recall: ', recall_score(y_test, pred))
 print('F1-Score: ', f1_score(y_test, pred))
 print('Precision: ', precision_score(y_test, pred))
+
+plot_confusion_matrix(clf, X_test,
+                      y_test, cmap="Blues",
+                      display_labels=y_test)
+plt.savefig("Metamodelo")
+plt.show()
