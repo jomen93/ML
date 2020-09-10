@@ -92,7 +92,7 @@ def scores(clfs):
 
 # Función para el plot de las matrices de confusión
 def confusion_matrix(clfs):
-    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(10, 5))
+    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(10, 3))
 
     for cls, ax in zip(clfs, axes.flatten()):
         plot_confusion_matrix(cls,
@@ -138,3 +138,7 @@ plot_confusion_matrix(clf, X_test,
                       display_labels=y_test)
 plt.savefig("Metamodelo")
 plt.show()
+
+
+
+print("Hola Jose David")
