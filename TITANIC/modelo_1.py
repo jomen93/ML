@@ -159,9 +159,9 @@ def confusion_matrix(clfs):
     ax.title.set_text(type(cls).__name__)
     plt.tight_layout()
     plt.savefig("Matriz_de _confusion")
-    # plt.show()
 
-confusion_matrix(clfs)
+# Activar para guradar la matriz de confusionde los modelos por aparte
+# confusion_matrix(clfs)
 
 # Medicion de las metrica para los tres modelos
 print(scores(clfs).iloc[0])
@@ -171,8 +171,15 @@ print("")
 print(scores(clfs).iloc[2])
 print("")
 # Construccion del meta modelo
+r = 11
 clfs = [("Bernoulli", BernoulliNB(alpha=0.8)),
-        ("LR", LogisticRegression(solver="liblinear")),
+        ("LR", LogisticRegression(solver="liblinear",
+                                  # penalty="l2",
+                                  # dual=True,
+                                  # tol=1e-6,
+                                  # C=0.8,
+                                  class_weight="balanced",
+                                  random_state=r)),
         ("Forest", RandomForestClassifier(bootstrap=True,
                                           ccp_alpha=0.0,
                                           criterion="entropy",
@@ -181,14 +188,13 @@ clfs = [("Bernoulli", BernoulliNB(alpha=0.8)),
                                           # max_leaf_nodes=5,
                                           max_samples=10,
                                           # min_impurity_decrease=0.0,
-                                          # min_impurity_split=None,
-                                          # min_samples_leaf=1,
-                                          # min_samples_split=15,
+                                          # min_samples_leaf=0,
+                                          # min_samples_split=10,
                                           # min_weight_fraction_leaf=0.0,
-                                          # n_estimators=350,
-                                          # n_jobs=None,
+                                          # n_estimators=50,
+                                          # n_jobs=10,
                                           # oob_score=True,
-                                          random_state=11))]
+                                          random_state=r))]
 
 clf = StackingClassifier(estimators=clfs,
                          final_estimator=LogisticRegression())
@@ -222,7 +228,6 @@ plt.grid(color='k', alpha=0.5, linestyle='dashed', linewidth=0.9)
 plt.title('Curva ROC')
 plt.legend(loc="lower right")
 plt.savefig("curva_ROC")
-plt.show()
 
 
 # Resultado para someter a la competencia
