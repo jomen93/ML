@@ -1,58 +1,77 @@
 #============================================================================
 # Librerias
-import numpy as np
+# import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 # Machine Learning
 from sklearn.naive_bayes import BernoulliNB
-from sklearn.model_selection import (train_test_split,
-                                     KFold)
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
 from sklearn.ensemble import (RandomForestClassifier,
-                              VotingClassifier,
                               StackingClassifier)
-from sklearn.metrics import (accuracy_score, auc, roc_auc_score,
-                             recall_score, log_loss, roc_curve,
+from sklearn.metrics import (accuracy_score,
+                             recall_score,
                              f1_score, precision_score,
-                             plot_confusion_matrix)
+                             plot_confusion_matrix,
+                             roc_curve, auc)
 from sklearn.linear_model import LogisticRegression
-
+from sklearn.preprocessing import OneHotEncoder
 # ============================================================================
 # Lectura de datos
 data = pd.read_csv("DATA/train.csv")
+test = pd.read_csv("DATA/test.csv")
+pid = test.PassengerId
 
-# Se verifica los valores para los cuales se tienen NaN
-# print(data.isna().sum())
-# Luego de esto se debe hacer ingenieria de parametros para poder rellenar
-# estos espacion en blanco y asi poder entrenar con seguridad cualquier modelo
-# se reemplaza valores vacios por el promedio de edad del conjunto de datos
-data[data.columns[5]].fillna(value=round(data.Age.mean()), inplace=True)
-# Se reemplaza los valores vacios por U, elección arbitraria
-data.Cabin.fillna(value="U", inplace=True)
-data[data.columns[10]] = data[data.columns[10]].apply(lambda x: x[0])
-# por utlimo la variable embarked tiene 2 posiciones vacias las reemplazamos
-# arbitrariamente con S, aunque puede ser a elección
-data[data.columns[10]].fillna(value="C", inplace=True)
+# columnas a eliminar
+name_data = data.columns[3]
+ticket_data = data.columns[8]
+
+name_test = test.columns[2]
+ticket_test = test.columns[7]
+
 
 # Se considera que el nombre no aporta ninguna decision sustancial dado que
 # solamente sirve como identificador y esa funcion la cumple prefectamente
 # la variabe (PassengerID), por tanto se elimina de la base de datos. Por otra
 # parte tambien la variable (Ticket) tiene valores unicos que no aportan nada
 # al modelo, se elimina también
-data = data.drop([data.columns[3], data.columns[8]], axis=1)
 
-# Existen en la base de datos variables categoricas que deben codificarse
-# Para este caso se utiliza la codificación más simple, variables dummy
-# se identifican las variables categoricas
-Pclass = data.columns[2]
-Sex = data.columns[3]
-SibSp = data.columns[5]
-Parch = data.columns[6]
-Cabin = data.columns[8]
-Embarked = data.columns[9]
+data = data.drop([name_data, ticket_data], axis=1)
+test = test.drop([name_test, ticket_test], axis=1)
 
-data = pd.get_dummies(data, columns=[Pclass, Sex, SibSp, Parch, Cabin,
-                      Embarked])
+
+# Se verifica los valores para los cuales se tienen NaN
+
+# print(test.isna().sum())
+Age_test = test.columns[3]
+Fare_test = test.columns[6]
+Cabin_test = test.columns[7]
+
+# print(data.isna().sum())
+Age_data = data.columns[4]
+Cabin_data = data.columns[8]
+Embarked_data = data.columns[9]
+
+
+# Luego de esto se debe hacer ingenieria de parametros para poder rellenar
+# estos espacion en blanco y asi poder entrenar con seguridad cualquier modelo
+# se reemplaza valores vacios por el promedio de edad del conjunto de datos
+
+data[Age_data].fillna(value=round(data.Age.mean()), inplace=True)
+test[Age_test].fillna(value=round(test.Age.mean()), inplace=True)
+
+# Se reemplaza los valores vacios por U, elección arbitraria
+
+test.Cabin.fillna(value="U", inplace=True)
+data.Cabin.fillna(value="U", inplace=True)
+
+# por utlimo la variable embarked tiene 2 posiciones vacias las reemplazamos
+# arbitrariamente con S, aunque puede ser a elección
+
+data[Embarked_data].fillna(value="C", inplace=True)
+
+# Para test se rellena con el promedio de datos en la variables Fare
+
+test[Fare_test].fillna(test.Fare.mean(), inplace=True)
 
 # Variables para el modelo, variable objetivo
 Survival = data.columns[1]
@@ -60,39 +79,75 @@ X = data.drop([Survival], axis=1)
 y = data[Survival]
 
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+# Existen en la base de datos variables categoricas que deben codificarse
+# Para este caso se utiliza la codificación más simple, variables dummy
+# se identifican las variables categoricas , ahora se manejan matrices de
+# numpy para poder utilizar la clase OneHotEncoder que permite codificar
+# datos nuevos en el modelo para prediciones
+X = X.to_numpy()
+Y = y.to_numpy()
+enc = OneHotEncoder(handle_unknown='ignore')
+enc.fit(X)
+X = enc.transform(X).toarray()
+# Pclass = data.columns[2]
+# Sex = data.columns[3]
+# SibSp = data.columns[5]
+# Parch = data.columns[6]
+# Cabin = data.columns[8]
+# Embarked = data.columns[9]
 
-# Consrucción del modelo
-# Se consideran tres modelos de clasificacion
+# data = pd.get_dummies(data, columns=[Pclass, Sex, SibSp, Parch, Cabin,
+#                       Embarked])
+
+#
+
+X_train, X_test, y_train, y_test = train_test_split(X,
+                                                    y,
+                                                    test_size=0.2,
+                                                    random_state=11)
+
+# # Consrucción del modelo
+# # Se consideran tres modelos de clasificacion
 clfs = [BernoulliNB(alpha=0.8),
         LogisticRegression(solver="liblinear"),
-        RandomForestClassifier(random_state=11)]
+        RandomForestClassifier(# bootstrap=True,
+                               # ccp_alpha=0.0,
+                               # criterion="gini",
+                               # max_depth=4,
+                               # max_features="auto",
+                               # max_leaf_nodes=5,
+                               # max_samples=None,
+                               # min_impurity_decrease=0.0,
+                               # min_impurity_split=None,
+                               random_state=11)]
 
-# compilacion de los modelos
+# # compilacion de los modelos
 for c in clfs:
     c.fit(X_train, y_train)
 
 
-# Construccion de una funcion para medir metricas
+# # Construccion de una funcion para medir metricas
 def scores(clfs):
     columns = ["Name", "Accuracy", "Precision",
                "Recall", "F1-Score"]
     metricas = pd.DataFrame([], columns=columns)
     for cls in clfs:
         stats = {}
-        pred = cls.predict(X_test)
-        stats.update({'Accuracy': accuracy_score(y_test, pred),
+        pred_test = cls.predict(X_test)
+        pred_train = cls.predict(X_train)
+        stats.update({'training Accuracy': accuracy_score(y_train, pred_train),
+                      'test Accuracy': accuracy_score(y_test, pred_test),
                       'Name': type(cls).__name__,
-                      'Recall': recall_score(y_test, pred),
-                      'F1-Score': f1_score(y_test, pred),
-                      'Precision': precision_score(y_test, pred)})
+                      'Recall': recall_score(y_test, pred_test),
+                      'F1-Score': f1_score(y_test, pred_test),
+                      'Precision': precision_score(y_test, pred_test)})
         metricas = metricas.append(stats, ignore_index=True)
     return metricas
 
 
-# Función para el plot de las matrices de confusión
+# # Función para el plot de las matrices de confusión
 def confusion_matrix(clfs):
-    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(10, 3))
+    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(11, 3.5))
 
     for cls, ax in zip(clfs, axes.flatten()):
         plot_confusion_matrix(cls,
@@ -104,7 +159,7 @@ def confusion_matrix(clfs):
     ax.title.set_text(type(cls).__name__)
     plt.tight_layout()
     plt.savefig("Matriz_de _confusion")
-    plt.show()
+    # plt.show()
 
 confusion_matrix(clfs)
 
@@ -118,23 +173,61 @@ print("")
 # Construccion del meta modelo
 clfs = [("Bernoulli", BernoulliNB(alpha=0.8)),
         ("LR", LogisticRegression(solver="liblinear")),
-        ("Forest", RandomForestClassifier(random_state=11))]
+        ("Forest", RandomForestClassifier(bootstrap=True,
+                                          ccp_alpha=0.0,
+                                          criterion="entropy",
+                                          max_depth=4,
+                                          # max_features="auto",
+                                          # max_leaf_nodes=5,
+                                          # max_samples=None,
+                                          # min_impurity_decrease=0.0,
+                                          # min_impurity_split=None,
+                                          # min_samples_leaf=1,
+                                          # min_samples_split=15,
+                                          # min_weight_fraction_leaf=0.0,
+                                          # n_estimators=350,
+                                          # n_jobs=None,
+                                          # oob_score=True,
+                                          random_state=11))]
 
 clf = StackingClassifier(estimators=clfs,
-      final_estimator=RandomForestClassifier(random_state=11))
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+                         final_estimator=LogisticRegression())
 
 clf.fit(X_train, y_train)
-pred = clf.predict(X_test)
+pred_test = clf.predict(X_test)
+pred_train = clf.predict(X_train)
 print("Name: ", type(clf).__name__)
-print("Accuracy: ", accuracy_score(y_test, pred))
-print('Recall: ', recall_score(y_test, pred))
-print('F1-Score: ', f1_score(y_test, pred))
-print('Precision: ', precision_score(y_test, pred))
+print("training Accuracy: ", accuracy_score(y_train, pred_train))
+print("test Accuracy: ", accuracy_score(y_test, pred_test))
 
+print('Recall: ', recall_score(y_test, pred_test))
+print('F1-Score: ', f1_score(y_test, pred_test))
+print('Precision: ', precision_score(y_test, pred_test))
+
+# Grafica de la matriz de confusion del metamodelo
 plot_confusion_matrix(clf, X_test,
                       y_test, cmap="Blues",
                       display_labels=y_test)
 plt.savefig("Metamodelo")
 plt.show()
+
+# grafica de la curva ROC del metamodelo
+frp, tpr, _ = roc_curve(y_test, pred_test)
+roc_auc = auc(frp, tpr)
+plt.plot([0, 1], [0, 1], 'k--')
+plt.plot(frp, tpr, "b", label="curva ROC (area = %0.3f)" % roc_auc)
+plt.xlabel('Tasa de Falsos Positivos')
+plt.ylabel('Tasa de verdadero Positivo')
+plt.grid(color='k', alpha=0.5, linestyle='dashed', linewidth=0.9)
+plt.title('Curva ROC')
+plt.legend(loc="lower right")
+plt.savefig("curva_ROC")
+plt.show()
+
+
+# Resultado para someter a la competencia
+test_encode = enc.transform(test).toarray()
+output = pd.DataFrame({"PassengerID": pid,
+                       "Survived": clf.predict(test_encode)})
+output.to_csv("submission.csv", index=False)
+print("Resultados generados")

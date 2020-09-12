@@ -1,26 +1,34 @@
-Name         BernoulliNB
-Accuracy        0.804469
-Precision       0.722892
-Recall          0.833333
-F1-Score        0.774194
+Name                 BernoulliNB
+Accuracy                     NaN
+Precision               0.814815
+Recall                  0.721311
+F1-Score                0.765217
+test Accuracy           0.849162
+training Accuracy       0.889045
 Name: 0, dtype: object
 
-Name         LogisticRegression
-Accuracy               0.815642
-Precision              0.774648
-Recall                 0.763889
-F1-Score               0.769231
+Name                 LogisticRegression
+Accuracy                            NaN
+Precision                      0.793651
+Recall                         0.819672
+F1-Score                       0.806452
+test Accuracy                  0.865922
+training Accuracy              0.924157
 Name: 1, dtype: object
 
-Name         RandomForestClassifier
-Accuracy                   0.821229
-Precision                    0.8125
-Recall                     0.722222
-F1-Score                   0.764706
+Name                 RandomForestClassifier
+Accuracy                                NaN
+Precision                          0.884615
+Recall                             0.754098
+F1-Score                           0.814159
+test Accuracy                      0.882682
+training Accuracy                         1
 Name: 2, dtype: object
 
 Name:  StackingClassifier
-Accuracy:  0.8044692737430168
-Recall:  0.6944444444444444
-F1-Score:  0.7407407407407406
-Precision:  0.7936507936507936
+training Accuracy:  0.9143258426966292
+test Accuracy:  0.8491620111731844
+Recall:  0.7540983606557377
+F1-Score:  0.7731092436974789
+Precision:  0.7931034482758621
+Resultados generados
