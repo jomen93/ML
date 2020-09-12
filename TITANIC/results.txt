@@ -9,26 +9,26 @@ Name: 0, dtype: object
 
 Name                 LogisticRegression
 Accuracy                            NaN
-Precision                      0.793651
-Recall                         0.819672
-F1-Score                       0.806452
+Precision                      0.784615
+Recall                         0.836066
+F1-Score                       0.809524
 test Accuracy                  0.865922
-training Accuracy              0.924157
+training Accuracy              0.922753
 Name: 1, dtype: object
 
 Name                 RandomForestClassifier
 Accuracy                                NaN
-Precision                          0.884615
-Recall                             0.754098
-F1-Score                           0.814159
-test Accuracy                      0.882682
+Precision                          0.882353
+Recall                             0.737705
+F1-Score                           0.803571
+test Accuracy                      0.877095
 training Accuracy                         1
 Name: 2, dtype: object
 
 Name:  StackingClassifier
-training Accuracy:  0.9143258426966292
-test Accuracy:  0.8603351955307262
-Recall:  0.7704918032786885
-F1-Score:  0.7899159663865546
-Precision:  0.8103448275862069
+training Accuracy:  0.9171348314606742
+test Accuracy:  0.8715083798882681
+Recall:  0.819672131147541
+F1-Score:  0.8130081300813008
+Precision:  0.8064516129032258
 Resultados generados

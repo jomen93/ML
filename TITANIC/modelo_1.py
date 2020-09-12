@@ -15,6 +15,7 @@ from sklearn.metrics import (accuracy_score,
                              roc_curve, auc)
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.tree import DecisionTreeClassifier
 # ============================================================================
 # Lectura de datos
 data = pd.read_csv("DATA/train.csv")
@@ -67,7 +68,7 @@ data.Cabin.fillna(value="U", inplace=True)
 # por utlimo la variable embarked tiene 2 posiciones vacias las reemplazamos
 # arbitrariamente con S, aunque puede ser a elección
 
-data[Embarked_data].fillna(value="C", inplace=True)
+data[Embarked_data].fillna(value="S", inplace=True)
 
 # Para test se rellena con el promedio de datos en la variables Fare
 
@@ -173,27 +174,18 @@ print("")
 # Construccion del meta modelo
 r = 11
 clfs = [("Bernoulli", BernoulliNB(alpha=0.8)),
+        ("Arbol Decision", DecisionTreeClassifier(max_depth=11,
+                                                  class_weight="balanced",
+                                                  random_state=r)),
         ("LR", LogisticRegression(solver="liblinear",
-                                  # penalty="l2",
-                                  # dual=True,
-                                  # tol=1e-6,
-                                  # C=0.8,
                                   class_weight="balanced",
                                   random_state=r)),
         ("Forest", RandomForestClassifier(bootstrap=True,
                                           ccp_alpha=0.0,
                                           criterion="entropy",
-                                          max_depth=2,
-                                          # max_features="auto",
-                                          # max_leaf_nodes=5,
+                                          max_depth=9,
+                                          n_estimators=20,
                                           max_samples=10,
-                                          # min_impurity_decrease=0.0,
-                                          # min_samples_leaf=0,
-                                          # min_samples_split=10,
-                                          # min_weight_fraction_leaf=0.0,
-                                          # n_estimators=50,
-                                          # n_jobs=10,
-                                          # oob_score=True,
                                           random_state=r))]
 
 clf = StackingClassifier(estimators=clfs,
