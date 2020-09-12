@@ -1,11 +1,12 @@
 #============================================================================
 # Librerias
-# import numpy as np
+import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 # Machine Learning
 from sklearn.naive_bayes import BernoulliNB
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import (train_test_split,
+                                     GridSearchCV)
 from sklearn.ensemble import (RandomForestClassifier,
                               StackingClassifier)
 from sklearn.metrics import (accuracy_score,
@@ -16,6 +17,12 @@ from sklearn.metrics import (accuracy_score,
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.tree import DecisionTreeClassifier
+
+import warnings
+import sklearn.exceptions
+warnings.filterwarnings("ignore",
+                        category=sklearn.exceptions.UndefinedMetricWarning)
+
 # ============================================================================
 # Lectura de datos
 data = pd.read_csv("DATA/train.csv")
@@ -172,7 +179,64 @@ print("")
 print(scores(clfs).iloc[2])
 print("")
 # Construccion del meta modelo
+
+# Encontrar los hiperparametros optimos de cada modelo con validacion
+# cruzada
 r = 11
+scoring = {"Accuracy": "accuracy",
+           "f1_Score": "f1",
+           "Precision": "precision",
+           "Recall": "recall"}
+# Seleccion hiperparametros arbol de decision
+# ============================================================================
+parametros_decision_tree = {"max_depth": np.arange(2, 20)}
+model_desicion_tree = DecisionTreeClassifier(class_weight='balanced',
+                                             random_state=r
+                                             )
+model_desicion_tree = GridSearchCV(model_desicion_tree,
+                                   parametros_decision_tree,
+                                   cv=10,
+                                   scoring=scoring,
+                                   refit="Accuracy"
+                                   )
+model_desicion_tree.fit(X_train, y_train)
+print("Nombre modelo: ", type(model_desicion_tree).__name__)
+print("Mejores parametros: {}".format(model_desicion_tree.best_params_))
+print("Mejor puntaje: {}".format(model_desicion_tree.best_score_))
+print(" ")
+# ============================================================================
+
+# Seleccion hiperparametros Random Forest
+# ============================================================================
+parametros_Random_forest = {"n_estimators": np.arange(1, 20),
+                            "max_depth": np.arange(1, 11, 2),
+                            "max_samples": np.arange(1, 11, 2)}
+model_random_forest = RandomForestClassifier(bootstrap=True,
+                                             ccp_alpha=0.0,
+                                             criterion="entropy",
+                                             random_state=r
+                                             )
+model_random_forest = GridSearchCV(model_random_forest,
+                                   parametros_Random_forest,
+                                   cv=10,
+                                   scoring=scoring,
+                                   refit="Accuracy")
+model_random_forest.fit(X_train, y_train)
+print("Nombre modelo: ", type(model_random_forest).__name__)
+print("Mejores parametros: {}".format(model_random_forest.best_params_))
+print("Mejor puntaje: {}".format(model_random_forest.best_score_))
+print(" ")
+# ============================================================================
+
+
+
+
+
+
+
+
+
+
 clfs = [("Bernoulli", BernoulliNB(alpha=0.8)),
         ("Arbol Decision", DecisionTreeClassifier(max_depth=11,
                                                   class_weight="balanced",
@@ -190,6 +254,7 @@ clfs = [("Bernoulli", BernoulliNB(alpha=0.8)),
 
 clf = StackingClassifier(estimators=clfs,
                          final_estimator=LogisticRegression())
+
 
 clf.fit(X_train, y_train)
 pred_test = clf.predict(X_test)
